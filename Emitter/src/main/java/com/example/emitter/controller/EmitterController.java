@@ -2,6 +2,7 @@ package com.example.emitter.controller;
 
 import com.example.emitter.services.IEmitterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,8 @@ public class EmitterController {
 
     @Autowired
     IEmitterService emitterService;
+
+
 
     @GetMapping("/test1")
     public ResponseEntity<?> test1(){

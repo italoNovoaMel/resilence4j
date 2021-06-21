@@ -3,7 +3,9 @@ package com.example.emitter.services;
 import com.example.emitter.dtos.ResponseDTO;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -12,19 +14,33 @@ public class EmitterService implements IEmitterService{
 
     private static final Logger log = LoggerFactory.getLogger(EmitterService.class);
 
-    RestTemplateBuilder builder;
+
     RestTemplate rest;
 
+    @Autowired
+    private CircuitBreakerFactory circuitBreakerFactory;
+
     public EmitterService() {
-        builder= new RestTemplateBuilder();
-        builder.build();
+
         rest= new RestTemplate();
     }
 
+    private RestTemplate restTemplate = new RestTemplate();
+
     @Override
     public ResponseDTO call1() {
-        return rest.getForObject(
-                "http://localhost:8081/test1", ResponseDTO.class);
+        CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitbreaker");
+        String url = "http://localhost:8081/test1";
+
+//        try {
+//            return circuitBreaker.run(() -> restTemplate.getForObject(url, ResponseDTO.class));
+//        }catch (Exception e){
+//            System.out.println(e.getMessage());
+//            return null;
+//        }
+
+        return circuitBreaker.run(() -> restTemplate.getForObject(url, ResponseDTO.class),
+                throwable -> new ResponseDTO(1D,throwable.getMessage()));
     }
 
     @Override
