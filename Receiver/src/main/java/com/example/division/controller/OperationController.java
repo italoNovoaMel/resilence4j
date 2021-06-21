@@ -23,7 +23,7 @@ public class OperationController {
 
         Double result = operationService.returnRandomProbability();
         logger.info("test1 executed");
-        if( result > 0.99 ){
+        if( result > 0.2 ){
             return new ResponseEntity<>(
                     new ResponseDTO(result,HttpStatus.BAD_REQUEST.getClass().getSimpleName()), HttpStatus.BAD_REQUEST);
         }else{

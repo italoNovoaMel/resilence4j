@@ -17,7 +17,7 @@ public class EmitterController {
 
     @GetMapping("/test1")
     public ResponseEntity<?> test1(){
-        return new ResponseEntity<>(emitterService.call1(), HttpStatus.OK);
+        return new ResponseEntity<>(emitterService.executeCall1(), HttpStatus.OK);
     }
 
     @GetMapping("/test2")
