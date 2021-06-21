@@ -1,5 +1,6 @@
 package com.example.division.controller;
 
+import com.example.division.dtos.ResponseDTO;
 import com.example.division.service.IOperationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,23 +15,24 @@ public class OperationController {
     IOperationService operationService;
 
     @GetMapping("/test1")
-    public ResponseEntity<Double> test1(){
+    public ResponseEntity<ResponseDTO> test1(){
 
         Double result = operationService.returnRandomProbability();
         if( result > 0.3 ){
-            return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(
+                    new ResponseDTO(result,HttpStatus.BAD_REQUEST.getClass().getSimpleName()), HttpStatus.BAD_REQUEST);
         }else{
-            return new ResponseEntity<>(result, HttpStatus.OK);
+            return new ResponseEntity<>(new ResponseDTO(result,HttpStatus.OK.getClass().getSimpleName()), HttpStatus.OK);
         }
 
     }
 
     @GetMapping("/test2")
-    public ResponseEntity<Double> test2() throws InterruptedException {
+    public ResponseEntity<ResponseDTO> test2() throws InterruptedException {
 
         Double result = operationService.returnRandomProbability();
         Thread.sleep((long) (result * 5000));
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDTO(result,HttpStatus.OK.getClass().getSimpleName()), HttpStatus.OK);
 
     }
 
