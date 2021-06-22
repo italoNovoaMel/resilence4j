@@ -6,6 +6,6 @@ public interface IEmitterService {
 
     public ResponseDTO executeCall1();
 
-    public ResponseDTO call2();
+    public ResponseDTO executeCall2();
 
 }

@@ -1,16 +1,18 @@
-package com.example.division.controller;
+package com.example.receiver.controller;
 
-import com.example.division.dtos.ResponseDTO;
-import com.example.division.service.IOperationService;
+import com.example.receiver.dtos.ResponseDTO;
+import com.example.receiver.service.IOperationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/receiver")
 public class OperationController {
 
     @Autowired

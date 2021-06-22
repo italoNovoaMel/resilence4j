@@ -1,4 +1,4 @@
-package com.example.division.service;
+package com.example.receiver.service;
 
 import org.springframework.stereotype.Service;
 

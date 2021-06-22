@@ -1,23 +1,17 @@
 package com.example.emitter.services;
 
-import ch.qos.logback.classic.spi.ClassPackagingData;
 import com.example.emitter.dtos.ResponseDTO;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
-import io.vavr.control.Try;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.concurrent.TimeoutException;
-import java.util.function.Supplier;
 
 @Service
 public class EmitterService implements IEmitterService{
@@ -35,10 +29,11 @@ public class EmitterService implements IEmitterService{
         rest= new RestTemplate();
 
         // Create a custom configuration for a CircuitBreaker
-        CircuitBreakerConfig circuitBreakerConfig = CircuitBreakerConfig.custom()
+        CircuitBreakerConfig circuitBreakerConfig;
+        circuitBreakerConfig = CircuitBreakerConfig.custom()
                 .failureRateThreshold(70)
                 .slowCallRateThreshold(50)
-                .waitDurationInOpenState(Duration.ofMillis(1000))
+                .waitDurationInOpenState(Duration.ofMillis(10000))
                 .slowCallDurationThreshold(Duration.ofSeconds(2))
                 .permittedNumberOfCallsInHalfOpenState(3)
                 .minimumNumberOfCalls(2)
@@ -49,6 +44,7 @@ public class EmitterService implements IEmitterService{
                 .recordException(e -> HttpStatus.BAD_REQUEST.equals(e.getMessage()))
                 .recordExceptions(IOException.class, TimeoutException.class)
                 */
+                .recordExceptions( HttpClientErrorException.class )
                 // .ignoreExceptions(BusinessException.class, OtherBusinessException.class)
                 .build();
 
@@ -76,17 +72,23 @@ public class EmitterService implements IEmitterService{
 
     public static ResponseDTO call1() {
         return rest.getForObject(
-                "http://localhost:8081/test1", ResponseDTO.class);
+                "http://localhost:8081/receiver/test1", ResponseDTO.class);
+    }
+
+    public static ResponseDTO call2() {
+        return rest.getForObject(
+                "http://localhost:8081/receiver/test2", ResponseDTO.class);
     }
 
     @Override
-    public ResponseDTO call2() {
-        return rest.getForObject(
-                "http://localhost:8081/test2", ResponseDTO.class);
-    }
-
     public ResponseDTO executeCall1() {
         ResponseDTO result = this.circuitBreakerWithDefaultConfig.executeSupplier(EmitterService::call1);
+        return result;
+    }
+
+    @Override
+    public ResponseDTO executeCall2() {
+        ResponseDTO result = this.circuitBreakerWithDefaultConfig.executeSupplier(EmitterService::call2);
         return result;
     }
 

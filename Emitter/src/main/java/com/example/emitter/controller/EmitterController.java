@@ -22,7 +22,7 @@ public class EmitterController {
 
     @GetMapping("/test2")
     public ResponseEntity<?> test2(){
-        return new ResponseEntity<>(emitterService.call2(), HttpStatus.OK);
+        return new ResponseEntity<>(emitterService.executeCall2(), HttpStatus.OK);
     }
 
 }

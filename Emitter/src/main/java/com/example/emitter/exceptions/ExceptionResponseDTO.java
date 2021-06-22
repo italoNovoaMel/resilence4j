@@ -1,4 +1,4 @@
-package com.example.division.dtos;
+package com.example.emitter.exceptions;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.example.division.service;
+package com.example.receiver.service;
 
 public interface IOperationService {
 

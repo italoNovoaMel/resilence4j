@@ -1,4 +1,4 @@
-package com.example.division.dtos;
+package com.example.receiver.dtos;
 
 import lombok.*;
 
